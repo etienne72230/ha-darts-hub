@@ -1,30 +1,29 @@
 from homeassistant.components.sensor import SensorEntity
 from .const import DOMAIN
 
-# Define all the sensors we want to extract from the WebSocket JSON
 SENSOR_TYPES = [
-    {"key": "board_status", "name": "Board Status", "icon": "mdi:target"},
-    {"key": "current_event", "name": "Current Event", "icon": "mdi:flash"},
-    {"key": "caller", "name": "Caller", "icon": "mdi:account-tie-voice"},
-    {"key": "match_id", "name": "Match ID", "icon": "mdi:identifier"},
-    {"key": "current_player", "name": "Current Player", "icon": "mdi:account"},
-    {"key": "game_mode", "name": "Game Mode", "icon": "mdi:gamepad-variant"},
-    {"key": "points_left", "name": "Points Left", "icon": "mdi:numeric"},
-    {"key": "last_dart_value", "name": "Last Dart Value", "icon": "mdi:dart"},
-    {"key": "last_dart_multiplier", "name": "Last Dart Multiplier", "icon": "mdi:close"},
-    {"key": "last_dart_field", "name": "Last Dart Field", "icon": "mdi:bullseye"},
-    {"key": "last_dart_type", "name": "Last Dart Type", "icon": "mdi:shape"},
-    {"key": "last_dart_x", "name": "Last Dart X", "icon": "mdi:axis-x-arrow"},
-    {"key": "last_dart_y", "name": "Last Dart Y", "icon": "mdi:axis-y-arrow"},
-    {"key": "round_score", "name": "Round Score", "icon": "mdi:scoreboard"},
+    {"key": "board_status", "name": "Board Status", "icon": "mdi:target", "default": "Waiting..."},
+    {"key": "current_event", "name": "Current Event", "icon": "mdi:flash", "default": "Waiting..."},
+    {"key": "caller", "name": "Caller", "icon": "mdi:account-tie-voice", "default": "Unknown"},
+    {"key": "match_id", "name": "Match ID", "icon": "mdi:identifier", "default": "None"},
+    {"key": "current_player", "name": "Current Player", "icon": "mdi:account", "default": "Waiting..."},
+    {"key": "game_mode", "name": "Game Mode", "icon": "mdi:gamepad-variant", "default": "Unknown"},
+    {"key": "points_left", "name": "Points Left", "icon": "mdi:numeric", "default": 0},
+    {"key": "last_dart_value", "name": "Last Dart Value", "icon": "mdi:dart", "default": 0},
+    {"key": "last_dart_multiplier", "name": "Last Dart Multiplier", "icon": "mdi:close", "default": 0},
+    {"key": "last_dart_field", "name": "Last Dart Field", "icon": "mdi:bullseye", "default": "-"},
+    {"key": "last_dart_type", "name": "Last Dart Type", "icon": "mdi:shape", "default": "-"},
+    {"key": "last_dart_x", "name": "Last Dart X", "icon": "mdi:axis-x-arrow", "default": 0.0},
+    {"key": "last_dart_y", "name": "Last Dart Y", "icon": "mdi:axis-y-arrow", "default": 0.0},
+    {"key": "round_score", "name": "Round Score", "icon": "mdi:scoreboard", "default": 0},
 ]
 
-# Add sensors for up to 6 players remaining scores
 for i in range(1, 7):
     SENSOR_TYPES.append({
         "key": f"player{i}_score", 
         "name": f"Player {i} Score", 
-        "icon": "mdi:numeric"
+        "icon": "mdi:numeric",
+        "default": 0
     })
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -46,15 +45,15 @@ class DartsHubSensor(SensorEntity):
         self._attr_name = f"Darts Hub {sensor_info['name']}"
         self._attr_unique_id = f"{entry_id}_{self._key}"
         self._attr_icon = sensor_info["icon"]
-        self._state = None
+        self._state = sensor_info.get("default", None)
         self._remove_callback = None
 
     async def async_added_to_hass(self):
-        """Run when entity about to be added to hass."""
+        """Register the callback when the entity is added to Home Assistant."""
         self._remove_callback = self._hub.register_callback(self._handle_new_data)
 
     async def async_will_remove_from_hass(self):
-        """Run when entity will be removed from hass."""
+        """Clean up the callback when the entity is removed."""
         if self._remove_callback:
             self._remove_callback()
 
@@ -111,6 +110,7 @@ class DartsHubSensor(SensorEntity):
                 self._state = data["remainingScores"][json_key]
                 updated = True
 
+        # Notify Home Assistant that the state has changed to trigger an immediate UI update
         if updated:
             self.async_write_ha_state()
 
@@ -121,5 +121,5 @@ class DartsHubSensor(SensorEntity):
 
     @property
     def should_poll(self):
-        """No polling needed. Updates are pushed via WebSockets."""
+        """Disable polling. Updates are pushed directly via WebSockets."""
         return False

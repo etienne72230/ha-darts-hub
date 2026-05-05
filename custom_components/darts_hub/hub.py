@@ -18,7 +18,7 @@ class DartsHubWebSocket:
         self._loop_task = None
 
     def register_callback(self, callback):
-        """Register a callback to receive WS updates."""
+        """Register a callback to receive WebSocket updates."""
         self._callbacks.add(callback)
         def remove_callback():
             self._callbacks.discard(callback)
@@ -34,7 +34,7 @@ class DartsHubWebSocket:
         
         while True:
             try:
-                # ssl=False is required because local WSS usually has self-signed certs
+                # ssl=False is required because local WebSocket servers usually have self-signed certificates
                 async with session.ws_connect(self.url, ssl=False) as ws:
                     _LOGGER.info("Connected to Darts Hub WebSocket")
                     
@@ -42,7 +42,7 @@ class DartsHubWebSocket:
                         if msg.type == aiohttp.WSMsgType.TEXT:
                             text = msg.data
                             
-                            # Handle Engine.IO ping/pong
+                            # Handle Engine.IO ping/pong heartbeat
                             if text == "2":
                                 await ws.send_str("3")
                                 continue
@@ -50,7 +50,7 @@ class DartsHubWebSocket:
                                 await ws.send_str("pong")
                                 continue
 
-                            # Parse Socket.IO messages containing arrays like: 2["message", {...}]
+                            # Parse Socket.IO messages containing arrays (e.g., 2["message", {...}])
                             if '["message",' in text:
                                 start_idx = text.find("[")
                                 if start_idx != -1:
@@ -66,7 +66,7 @@ class DartsHubWebSocket:
             except Exception as e:
                 _LOGGER.error(f"Darts Hub WebSocket error: {e}")
             
-            # Reconnect delay
+            # Reconnect delay after a failure or disconnection
             await asyncio.sleep(5)
 
     def _dispatch(self, data):
