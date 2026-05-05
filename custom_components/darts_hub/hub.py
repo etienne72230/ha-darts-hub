@@ -6,6 +6,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)
 
+# C'est ce nom exact que Home Assistant cherche !
 class DartsHubWebSocket:
     """Manage the WebSocket connection to Dart-Hub."""
 
@@ -42,24 +43,31 @@ class DartsHubWebSocket:
                         if msg.type == aiohttp.WSMsgType.TEXT:
                             text = msg.data
                             
-                            # Handle Engine.IO ping/pong heartbeat
+                            # Engine.IO Open (0) -> Send Socket.IO Connect (40)
+                            if text.startswith("0"):
+                                await ws.send_str("40")
+                                continue
+                                
+                            # Engine.IO Ping (2) -> Send Pong (3)
                             if text == "2":
                                 await ws.send_str("3")
                                 continue
-                            if text == "ping":
-                                await ws.send_str("pong")
+                                
+                            # Socket.IO Connect Auth Success (40)
+                            if text.startswith("40"):
                                 continue
 
-                            # Parse Socket.IO messages containing arrays (e.g., 2["message", {...}])
-                            if '["message",' in text:
-                                start_idx = text.find("[")
-                                if start_idx != -1:
-                                    try:
-                                        payload = json.loads(text[start_idx:])
-                                        if len(payload) >= 2 and payload[0] == "message":
-                                            self._dispatch(payload[1])
-                                    except json.JSONDecodeError:
-                                        pass
+                            # Socket.IO Event (42)
+                            if text.startswith("42"):
+                                try:
+                                    payload_str = text[2:]
+                                    payload = json.loads(payload_str)
+                                    
+                                    if isinstance(payload, list) and len(payload) >= 2 and payload[0] == "message":
+                                        self._dispatch(payload[1])
+                                        
+                                except json.JSONDecodeError as e:
+                                    _LOGGER.error(f"Failed to parse Socket.IO event: {e}")
 
                         elif msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR):
                             break
