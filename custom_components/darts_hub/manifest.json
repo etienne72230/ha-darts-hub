@@ -1,0 +1,10 @@
+{
+  "domain": "darts_hub",
+  "name": "Darts Hub",
+  "codeowners": ["@etienne72230"],
+  "dependencies": [],
+  "requirements": [],
+  "iot_class": "local_push",
+  "config_flow": true,
+  "version": "1.0.0"
+}
