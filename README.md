@@ -4,6 +4,19 @@
 
 Unofficial Home Assistant integration to retrieve real-time data from an Autodarts board locally and control it. This integration uses a **Local Push** system for instant responsiveness.
 
+## 📸 Screenshots
+
+Here is what the integration looks like once configured in Home Assistant:
+
+*Live tracking of match events, points left, and player scores.*
+![Game Data](images/game_datas.png)
+
+*Detailed, real-time statistics and coordinates for every dart thrown.*
+![Darts Data](images/darts_data.png)
+
+*Interactive buttons to control the board directly from your dashboard.*
+![Control Data](images/control_data.png)
+
 ## ⚠️ Mandatory Prerequisites
 
 You **must** have the following tools running on your local network:
@@ -79,5 +92,5 @@ The integration is fully configured via the Home Assistant user interface, no YA
 4. A prompt will appear. Enter:
    - **Host:** The IP address of the machine running *Darts-hub* (e.g., `192.168.1.50` or `localhost` if it runs on the same machine).
    - **Darts-hub Port**: The port configured in Darts-hub (default is `8079`).
-   - **Autodarts Port**:  The port configured in autodarts (default is `3180').
+   - **Autodarts Port**:  The port configured in autodarts (default is `3180`).
 5. Click Submit. Your entities are ready and will react to the next dart thrown!
