@@ -1,6 +1,8 @@
 DOMAIN = "darts_hub"
 CONF_HOST = "host"
 CONF_PORT = "port"
+CONF_AUTODARTS_PORT = "autodarts_port"
 
 DEFAULT_HOST = "localhost"
 DEFAULT_PORT = 8079
+DEFAULT_AUTODARTS_PORT = 3180

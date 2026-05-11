@@ -2,10 +2,10 @@ import asyncio
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN, CONF_HOST, CONF_PORT
+from .const import DOMAIN, CONF_HOST, CONF_PORT, CONF_AUTODARTS_PORT
 from .hub import DartsHubWebSocket
 
-PLATFORMS = ["sensor"]
+PLATFORMS = ["sensor", "button"]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Darts Hub from a config entry."""
@@ -13,8 +13,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     host = entry.data[CONF_HOST]
     port = entry.data[CONF_PORT]
+    ad_port = entry.data.get(CONF_AUTODARTS_PORT, 3180)
 
-    hub = DartsHubWebSocket(hass, host, port)
+    hub = DartsHubWebSocket(hass, host, port, ad_port)
     hass.data[DOMAIN][entry.entry_id] = hub
 
     await hub.connect()

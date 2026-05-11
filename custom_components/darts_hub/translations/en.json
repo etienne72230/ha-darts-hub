@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Darts Hub",
+        "description": "Enter the connection details for your local Autodarts and Darts-hub servers.",
+        "data": {
+          "host": "Board IP Address (Host)",
+          "port": "Darts-hub Port (default: 8079)",
+          "autodarts_port": "Autodarts API Port (default: 3180)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect. Are the Darts-hub and Autodarts servers running?",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This Autodarts board is already configured in Home Assistant."
+    }
+  }
+}
