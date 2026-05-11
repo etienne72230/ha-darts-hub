@@ -9,6 +9,7 @@ Unofficial Home Assistant integration to retrieve real-time data from an Autodar
 You **must** have the following tools running on your local network:
 1. **Darts-hub** (or Darts-caller): Acts as a Socket.IO server for match management.
 👉 **[Download and install Darts-hub (lbormann/darts-hub)](https://github.com/lbormann/darts-hub)**
+👉 **[Download and install Darts-hub (lbormann/darts-hub)](https://github.com/lbormann/darts-hub)**
 2. **Autodarts Desktop/Board**: The core target software.
 ## ⚙️ How Data Retrieval Works (Dual-Source Logic)
 
@@ -48,6 +49,9 @@ You can now control your board directly from your Home Assistant dashboard!
 
 The easiest way is to use the quick-add button below, which will directly open your Home Assistant and prompt you to add the repository:
 
+
+The easiest way is to use the quick-add button below, which will directly open your Home Assistant and prompt you to add the repository:
+
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=etienne72230&repository=ha-darts-hub&category=integration)
 
 **If the button doesn't work, you can do it manually:**
@@ -65,8 +69,6 @@ The easiest way is to use the quick-add button below, which will directly open y
 2. Extract the archive and copy the `darts_hub` folder (located inside `custom_components/`) into the `custom_components/` directory of your Home Assistant installation.
 3. **Restart** Home Assistant.
 
----
-
 ## ⚙️ Configuration
 
 The integration is fully configured via the Home Assistant user interface, no YAML coding is required!
@@ -76,7 +78,6 @@ The integration is fully configured via the Home Assistant user interface, no YA
 3. Search for **Darts Hub**.
 4. A prompt will appear. Enter:
    - **Host:** The IP address of the machine running *Darts-hub* (e.g., `192.168.1.50` or `localhost` if it runs on the same machine).
-   - **Port:** The port configured in Darts-hub (default is `8079`).
    - **Darts-hub Port**: The port configured in Darts-hub (default is `8079`).
    - **Autodarts Port**:  The port configured in autodarts (default is `3180').
 5. Click Submit. Your entities are ready and will react to the next dart thrown!
